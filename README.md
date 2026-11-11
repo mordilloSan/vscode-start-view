@@ -19,16 +19,21 @@ VS Code places the Home button below its built-in activity bar icons. Drag it to
 
 ## Install
 
-Build a `.vsix` from source and install it:
+Install **Start View** from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=MiguelMariz.start-view), or search for `MiguelMariz.start-view` in the Extensions view. VS Code then keeps it up to date.
+
+Each [GitHub release](https://github.com/mordilloSan/vscode-start-view/releases) also has the `.vsix` attached. To install one, run **Extensions: Install from VSIX...** from the Command Palette. A copy installed this way does not update automatically.
+
+Requires VS Code 1.74 or later.
+
+### Build from source
 
 ```sh
 git clone https://github.com/mordilloSan/vscode-start-view.git
 cd vscode-start-view
-npx @vscode/vsce package
-code --install-extension start-view-1.0.0.vsix
+make build
 ```
 
-Requires VS Code 1.74 or later.
+This writes `start-view-<version>.vsix` to the folder; install it with **Extensions: Install from VSIX...**.
 
 ## Settings
 

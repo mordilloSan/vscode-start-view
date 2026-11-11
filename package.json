@@ -1,7 +1,7 @@
 {
 	"name": "start-view",
 	"publisher": "MiguelMariz",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"displayName": "Start View",
 	"description": "A Home button in the activity bar with configurable quick-access buttons for opening a project.",
 	"icon": "icon.png",
