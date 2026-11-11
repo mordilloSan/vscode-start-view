@@ -17,19 +17,14 @@ function updateContext() {
 }
 
 exports.activate = async (context) => {
-  // Only for empty windows: windows with a folder remember their own layout.
-  if (vscode.workspace.workspaceFolders) return;
-
+  // The Start view is reachable in every window, so every window needs the context keys.
   updateContext();
   context.subscriptions.push(vscode.extensions.onDidChange(updateContext));
 
-  const config = vscode.workspace.getConfiguration('startView');
-  if (config.get('openOnStartup')) {
-    await vscode.commands.executeCommand('workbench.view.explorer');
-  }
-  if (config.get('hideNoFolderView')) {
-    // Hide the built-in "No Folder Opened" view so only Start shows; VS Code remembers this.
-    // Fails harmlessly when it is already hidden or Start is not visible yet.
-    vscode.commands.executeCommand('workbench.explorer.emptyView.removeView').then(undefined, () => {});
+  // Only empty windows open on Start: windows with a folder remember their own layout.
+  if (vscode.workspace.workspaceFolders) return;
+
+  if (vscode.workspace.getConfiguration('startView').get('openOnStartup')) {
+    await vscode.commands.executeCommand('workbench.view.extension.startView');
   }
 };

@@ -3,7 +3,7 @@
 	"publisher": "MiguelMariz",
 	"version": "1.0.0",
 	"displayName": "Start View",
-	"description": "A Start view with quick-access buttons in the Explorer side bar of empty windows.",
+	"description": "A Home button in the activity bar with configurable quick-access buttons for opening a project.",
 	"icon": "icon.png",
 	"license": "MIT",
 	"repository": {
@@ -17,17 +17,28 @@
 		"onStartupFinished"
 	],
 	"main": "./extension.js",
+	"extensionKind": [
+		"ui"
+	],
 	"scripts": {
 		"package": "vsce package"
 	},
 	"contributes": {
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "startView",
+					"title": "Start",
+					"icon": "$(home)"
+				}
+			]
+		},
 		"views": {
-			"explorer": [
+			"startView": [
 				{
 					"id": "startView.start",
 					"name": "Start",
-					"icon": "$(home)",
-					"when": "workbenchState == empty"
+					"icon": "$(home)"
 				}
 			]
 		},
@@ -84,12 +95,7 @@
 				"startView.openOnStartup": {
 					"type": "boolean",
 					"default": true,
-					"description": "Open the Explorer side bar when a window starts with no folder."
-				},
-				"startView.hideNoFolderView": {
-					"type": "boolean",
-					"default": true,
-					"markdownDescription": "Hide the built-in **No Folder Opened** view in empty windows, so only the Start view shows. VS Code remembers this: to bring the view back, turn this off and tick **No Folder Opened** in the Explorer `...` menu."
+					"description": "Open the Start view when a window starts with no folder."
 				},
 				"startView.items.openFolder": {
 					"type": "boolean",

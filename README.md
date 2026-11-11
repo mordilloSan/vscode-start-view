@@ -1,8 +1,8 @@
 # Start View
 
-A **Start** view in the Explorer side bar of empty VS Code windows, with quick-access buttons for getting into a project.
+A **Home** button in the VS Code activity bar that opens a **Start** view, with quick-access buttons for getting into a project.
 
-When you open a window with no folder, VS Code shows the built-in **No Folder Opened** view. Start View replaces it with a short list of buttons grouped by where your project lives:
+The button is there in every window, and a window with no folder opens on the Start view. The buttons are grouped by where your project lives:
 
 | Group | Button | Shown when |
 | --- | --- | --- |
@@ -13,7 +13,9 @@ When you open a window with no folder, VS Code shows the built-in **No Folder Op
 | Remote | Remote Explorer | [Remote Explorer](https://marketplace.visualstudio.com/items?itemName=ms-vscode.remote-explorer), [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh) or [WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) is installed |
 | Remote | WSL Explorer | [WSL Manager](https://marketplace.visualstudio.com/items?itemName=jkudo.wsl-manager) is installed |
 
-Buttons that depend on another extension appear and disappear as you install or remove it, with no reload. The view only exists in empty windows; windows with a folder or workspace open are left alone.
+Buttons that depend on another extension appear and disappear as you install or remove it, with no reload.
+
+VS Code places the Home button below its built-in activity bar icons. Drag it to the top once and VS Code keeps it there.
 
 ## Install
 
@@ -34,8 +36,7 @@ Every setting is on by default.
 
 | Setting | What it does |
 | --- | --- |
-| `startView.openOnStartup` | Open the Explorer side bar when a window starts with no folder. |
-| `startView.hideNoFolderView` | Hide the built-in **No Folder Opened** view so only Start shows. |
+| `startView.openOnStartup` | Open the Start view when a window starts with no folder. |
 | `startView.items.openFolder` | Show the **Open Folder** button. |
 | `startView.items.projectManager` | Show the **Project Manager** button. |
 | `startView.items.openRemoteRepository` | Show the **Open Remote Repository** button. |
@@ -44,7 +45,3 @@ Every setting is on by default.
 | `startView.items.wslExplorer` | Show the **WSL Explorer** button. |
 
 A group heading disappears when all of its buttons are hidden.
-
-### Bringing back "No Folder Opened"
-
-VS Code remembers that the built-in view was hidden, so turning off `startView.hideNoFolderView` is not enough on its own. After turning it off, open the Explorer `...` menu and tick **No Folder Opened**.
