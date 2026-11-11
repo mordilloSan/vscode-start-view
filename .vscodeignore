@@ -1,6 +1,7 @@
 .github/**
 .gitignore
 .vscodeignore
+Makefile
 SECURITY.md
 package-lock.json
 *.vsix
