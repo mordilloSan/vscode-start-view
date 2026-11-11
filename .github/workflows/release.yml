@@ -1,0 +1,125 @@
+name: Release
+
+# Runs when a gh-release-flow release PR (dev/vX.Y.Z -> main) is merged. It
+# builds the .vsix, publishes it to the Visual Studio Marketplace, then creates
+# the vX.Y.Z tag and GitHub Release with the .vsix attached.
+#
+# Marketplace publishing uses trusted publishing (OIDC), so no token is stored.
+# It depends on a policy created once at https://marketplace.visualstudio.com/manage
+# under publisher MiguelMariz > Trusted Publishing:
+#   Repository owner: mordilloSan
+#   Repository:       vscode-start-view
+#   Workflow:         release.yml
+#   Environment:      (empty)
+# Renaming this file or the repository breaks publishing until the policy is updated.
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  build:
+    name: Build extension
+    if: >-
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.head.ref, 'dev/v') &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      checks: read
+      contents: read
+      pull-requests: read
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - name: Require successful Check workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          checks=$(gh pr checks "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json bucket,workflow)
+          jq -e '[.[] | select(.workflow == "Check")] |
+            length > 0 and all(.[]; .bucket == "pass")' <<< "$checks"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          persist-credentials: false
+      - name: Validate version
+        id: version
+        env:
+          RELEASE_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          [[ $RELEASE_BRANCH =~ ^dev/v[0-9]+\.[0-9]+\.[0-9]+$ ]] || {
+            echo "::error::The Marketplace only accepts MAJOR.MINOR.PATCH versions (got '$RELEASE_BRANCH')."
+            exit 1
+          }
+          tag=${RELEASE_BRANCH#dev/}
+          actual=$(jq -r .version package.json)
+          [[ $actual == "${tag#v}" ]] || {
+            echo "::error file=package.json::package.json has version '$actual', expected '${tag#v}'."
+            exit 1
+          }
+          printf 'tag=%s\n' "$tag" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+      - name: Package
+        run: npm run package
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: vsix
+          path: "*.vsix"
+          if-no-files-found: error
+
+  marketplace:
+    name: Publish to Marketplace
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: vsix
+          path: dist
+      # --skip-duplicate lets a re-run continue when this step already succeeded.
+      - name: Publish
+        run: npx vsce publish --oidc --skip-duplicate --packagePath dist/*.vsix
+
+  github-release:
+    name: Create GitHub Release
+    needs: [build, marketplace]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: vsix
+          path: dist
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.build.outputs.tag }}
+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          # The release PR body holds the grouped changelog written by open-pr.
+          if [[ -n $PR_BODY ]]; then notes=(--notes "$PR_BODY"); else notes=(--generate-notes); fi
+          gh release create "$RELEASE_TAG" dist/*.vsix --repo "$GITHUB_REPOSITORY" \
+            --target "$MERGE_SHA" "${notes[@]}"

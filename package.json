@@ -17,6 +17,9 @@
 		"onStartupFinished"
 	],
 	"main": "./extension.js",
+	"scripts": {
+		"package": "vsce package"
+	},
 	"contributes": {
 		"views": {
 			"explorer": [
@@ -120,5 +123,8 @@
 				}
 			}
 		}
+	},
+	"devDependencies": {
+		"@vscode/vsce": "^4.1.0"
 	}
 }
