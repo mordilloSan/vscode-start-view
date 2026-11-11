@@ -1,7 +1,7 @@
 {
 	"name": "start-view",
 	"publisher": "MiguelMariz",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"displayName": "Start View",
 	"description": "A Home button in the activity bar with configurable quick-access buttons for opening a project.",
 	"icon": "icon.png",
@@ -38,7 +38,8 @@
 				{
 					"id": "startView.start",
 					"name": "Start",
-					"icon": "$(home)"
+					"icon": "$(home)",
+					"when": "workbenchState == empty || !config.startView.hideWhenFolderOpen"
 				}
 			]
 		},
@@ -96,6 +97,11 @@
 					"type": "boolean",
 					"default": true,
 					"description": "Open the Start view when a window starts with no folder."
+				},
+				"startView.hideWhenFolderOpen": {
+					"type": "boolean",
+					"default": false,
+					"description": "Hide the Home button in windows that have a folder or workspace open."
 				},
 				"startView.items.openFolder": {
 					"type": "boolean",
