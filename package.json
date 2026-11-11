@@ -1,0 +1,119 @@
+{
+	"name": "start-view",
+	"publisher": "a90508eb-6967-48c5-b61b-17eab445c98d",
+	"version": "1.0.0",
+	"displayName": "Start View",
+	"description": "A Start view with quick-access buttons in the Explorer side bar of empty windows.",
+	"icon": "icon.png",
+	"engines": {
+		"vscode": "^1.74.0"
+	},
+	"activationEvents": [
+		"onStartupFinished"
+	],
+	"main": "./extension.js",
+	"contributes": {
+		"views": {
+			"explorer": [
+				{
+					"id": "startView.start",
+					"name": "Start",
+					"icon": "$(home)",
+					"when": "workbenchState == empty"
+				}
+			]
+		},
+		"viewsWelcome": [
+			{
+				"contents": "Local",
+				"when": "config.startView.items.openFolder || config.startView.items.projectManager && startView.hasProjectManager",
+				"view": "startView.start"
+			},
+			{
+				"contents": "[Open Folder](command:workbench.action.files.openFolder)",
+				"when": "config.startView.items.openFolder",
+				"view": "startView.start"
+			},
+			{
+				"contents": "[Project Manager](command:workbench.view.extension.project-manager)",
+				"when": "config.startView.items.projectManager && startView.hasProjectManager",
+				"view": "startView.start"
+			},
+			{
+				"contents": "Repository",
+				"when": "config.startView.items.cloneRepository || config.startView.items.openRemoteRepository && startView.hasRemoteHub",
+				"view": "startView.start"
+			},
+			{
+				"contents": "[Open Remote Repository](command:remoteHub.openRepository)",
+				"when": "config.startView.items.openRemoteRepository && startView.hasRemoteHub",
+				"view": "startView.start"
+			},
+			{
+				"contents": "[Clone Repository](command:git.clone)",
+				"when": "config.startView.items.cloneRepository",
+				"view": "startView.start"
+			},
+			{
+				"contents": "Remote",
+				"when": "config.startView.items.remoteExplorer && startView.hasRemoteExplorer || config.startView.items.wslExplorer && startView.hasWslManager",
+				"view": "startView.start"
+			},
+			{
+				"contents": "[Remote Explorer](command:workbench.view.remote)",
+				"when": "config.startView.items.remoteExplorer && startView.hasRemoteExplorer",
+				"view": "startView.start"
+			},
+			{
+				"contents": "[WSL Explorer](command:workbench.view.extension.wsl-manager)",
+				"when": "config.startView.items.wslExplorer && startView.hasWslManager",
+				"view": "startView.start"
+			}
+		],
+		"configuration": {
+			"title": "Start View",
+			"properties": {
+				"startView.openOnStartup": {
+					"type": "boolean",
+					"default": true,
+					"description": "Open the Explorer side bar when a window starts with no folder."
+				},
+				"startView.hideNoFolderView": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Hide the built-in **No Folder Opened** view in empty windows, so only the Start view shows. VS Code remembers this: to bring the view back, turn this off and tick **No Folder Opened** in the Explorer `...` menu."
+				},
+				"startView.items.openFolder": {
+					"type": "boolean",
+					"default": true,
+					"description": "Show the \"Open Folder\" button in the Start view."
+				},
+				"startView.items.projectManager": {
+					"type": "boolean",
+					"default": true,
+					"description": "Show the \"Project Manager\" button in the Start view. Only appears when the Project Manager extension is installed."
+				},
+				"startView.items.openRemoteRepository": {
+					"type": "boolean",
+					"default": true,
+					"description": "Show the \"Open Remote Repository\" button in the Start view. Only appears when the GitHub Repositories extension is installed."
+				},
+				"startView.items.cloneRepository": {
+					"type": "boolean",
+					"default": true,
+					"description": "Show the \"Clone Repository\" button in the Start view."
+				},
+				"startView.items.remoteExplorer": {
+					"type": "boolean",
+					"default": true,
+					"description": "Show the \"Remote Explorer\" button in the Start view. Only appears when the Remote Explorer extension is installed."
+				},
+				"startView.items.wslExplorer": {
+					"type": "boolean",
+					"default": true,
+					"description": "Show the \"WSL Explorer\" button in the Start view. Only appears when the WSL Manager extension is installed."
+				}
+			}
+		}
+	}
+}
