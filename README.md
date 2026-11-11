@@ -37,11 +37,12 @@ This writes `start-view-<version>.vsix` to the folder; install it with **Extensi
 
 ## Settings
 
-Every setting is on by default.
+Every setting except `startView.hideWhenFolderOpen` is on by default.
 
 | Setting | What it does |
 | --- | --- |
 | `startView.openOnStartup` | Open the Start view when a window starts with no folder. |
+| `startView.hideWhenFolderOpen` | Hide the Home button in windows that have a folder or workspace open. |
 | `startView.items.openFolder` | Show the **Open Folder** button. |
 | `startView.items.projectManager` | Show the **Project Manager** button. |
 | `startView.items.openRemoteRepository` | Show the **Open Remote Repository** button. |
