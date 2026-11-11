@@ -1,10 +1,15 @@
 {
 	"name": "start-view",
-	"publisher": "a90508eb-6967-48c5-b61b-17eab445c98d",
+	"publisher": "MiguelMariz",
 	"version": "1.0.0",
 	"displayName": "Start View",
 	"description": "A Start view with quick-access buttons in the Explorer side bar of empty windows.",
 	"icon": "icon.png",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/mordilloSan/vscode-start-view.git"
+	},
 	"engines": {
 		"vscode": "^1.74.0"
 	},
